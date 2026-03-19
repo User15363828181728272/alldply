@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>S-Deployment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="/style.css"/>
+</head>
+<body>
+
+<div class="app">
+
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">S-Deployment</span>
+    </div>
+    <div class="header-right">
+      <button class="lang-toggle" id="langToggle" onclick="toggleLang()">
+        <i class="fa-solid fa-globe"></i>
+        <span id="langLabel">EN</span>
+      </button>
+      <a class="tg-badge" href="https://t.me/depstore11" target="_blank" rel="noopener">
+        <i class="fab fa-telegram"></i>
+        @depstore11
+      </a>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <section class="hero">
+      <div class="hero-badge" data-i18n="hero.badge">Web Automation Tool</div>
+      <h1 class="hero-title">
+        <span data-i18n="hero.title1">Deploy your website</span><br/>
+        <span class="hero-accent" data-i18n="hero.title2">to 4 platforms</span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero.sub">Upload a ZIP file and go live in seconds. No config needed.</p>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-val" id="hs-deploy">—</span><span class="hstat-key" data-i18n="stat.deploys">Deploys</span></div>
+        <div class="hstat-div"></div>
+        <div class="hstat"><span class="hstat-val" id="hs-clone">—</span><span class="hstat-key" data-i18n="stat.clones">Clones</span></div>
+        <div class="hstat-div"></div>
+        <div class="hstat"><span class="hstat-val" id="hs-runtime">0s</span><span class="hstat-key" data-i18n="stat.uptime">Uptime</span></div>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-deploy" onclick="switchTab('deploy')" data-i18n="tab.deploy">Deploy</button>
+      <button class="tab" id="tab-clone"  onclick="switchTab('clone')"  data-i18n="tab.clone">Clone</button>
+      <button class="tab" id="tab-rating" onclick="switchTab('rating')" data-i18n="tab.rating">Rating</button>
+      <div class="tab-ink" id="tabInk"></div>
+    </div>
+
+    <div class="panel" id="panel-deploy">
+      <div class="field-group">
+        <label class="field-label" data-i18n="deploy.platform">Platform</label>
+        <div class="platform-grid">
+          <button class="plat active" data-platform="netlify" onclick="selectPlatform('netlify')">
+            <i class="fas fa-leaf plat-ico"></i>
+            <span class="plat-nm">Netlify</span>
+          </button>
+          <button class="plat" data-platform="vercel" onclick="selectPlatform('vercel')">
+            <i class="fas fa-circle-half-stroke plat-ico"></i>
+            <span class="plat-nm">Vercel</span>
+          </button>
+          <button class="plat" data-platform="cloudflare" onclick="selectPlatform('cloudflare')">
+            <i class="fab fa-cloudflare plat-ico"></i>
+            <span class="plat-nm">CF Pages</span>
+          </button>
+          <button class="plat" data-platform="deno" onclick="selectPlatform('deno')">
+            <i class="fas fa-feather plat-ico"></i>
+            <span class="plat-nm">Deno</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="deploy-domain" data-i18n="deploy.sitename">Site Name</label>
+        <input class="input" type="text" id="deploy-domain" data-i18n-placeholder="deploy.sitename.ph"/>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" data-i18n="deploy.file">ZIP File</label>
+        <div class="file-drop" id="fileDrop" onclick="document.getElementById('deploy-file').click()">
+          <input type="file" id="deploy-file" accept=".zip" style="display:none" onchange="onFileChange(this)"/>
+          <div class="file-drop-icon">
+            <i class="fas fa-cloud-arrow-up" style="font-size:26px"></i>
+          </div>
+          <div class="file-drop-text" id="fileDropText" data-i18n="deploy.file.hint">Click to select or drag &amp; drop</div>
+          <div class="file-drop-sub" data-i18n="deploy.file.sub">ZIP only · max 50 MB</div>
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-deploy"></div>
+
+      <div class="progress-wrap" id="progress-deploy" style="display:none">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-steps" id="progress-steps"></div>
+      </div>
+
+      <button class="btn-primary" id="btn-deploy" onclick="startDeploy()">
+        <span id="btn-deploy-text" data-i18n="deploy.btn">Deploy to Netlify</span>
+      </button>
+
+      <div class="result-card" id="result-deploy" style="display:none">
+        <div class="result-icon"><i class="fas fa-circle-check"></i></div>
+        <div class="result-body">
+          <div class="result-label" data-i18n="deploy.result.label">Live URL</div>
+          <a class="result-url" id="res-deploy-url" href="#" target="_blank"></a>
+          <div class="result-meta" id="res-deploy-platform"></div>
+        </div>
+        <a class="result-open" id="res-deploy-open" href="#" target="_blank" data-i18n="deploy.result.open">Open ↗</a>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="panel-clone">
+      <div class="field-group">
+        <label class="field-label" for="clone-url" data-i18n="clone.url">Website URL</label>
+        <input class="input" type="text" id="clone-url" data-i18n-placeholder="clone.url.ph"/>
+      </div>
+
+      <div class="error-msg" id="error-clone"></div>
+
+      <div class="progress-wrap" id="progress-clone" style="display:none">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill-clone"></div></div>
+        <div class="progress-steps" id="progress-steps-clone"></div>
+      </div>
+
+      <button class="btn-primary" id="btn-clone" onclick="startClone()" data-i18n="clone.btn">Get Source Code</button>
+
+      <div class="result-card" id="result-clone" style="display:none">
+        <div class="result-icon"><i class="fas fa-file-zipper"></i></div>
+        <div class="result-body">
+          <div class="result-label" data-i18n="clone.result.label">Download Ready</div>
+          <a class="result-url" id="res-clone-url" href="#" download></a>
+          <div class="result-meta" id="res-clone-info"></div>
+        </div>
+        <a class="result-open" id="res-clone-dl" href="#" download data-i18n="clone.result.dl">Save ↓</a>
+      </div>
+    </div>
+
+    <div class="panel hidden" id="panel-rating">
+      <div class="field-group">
+        <label class="field-label" for="rating-name" data-i18n="rating.name">Your Name</label>
+        <input class="input" type="text" id="rating-name" data-i18n-placeholder="rating.name.ph"/>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" data-i18n="rating.stars">Rating</label>
+        <div class="stars-row">
+          <button class="star-btn" data-v="1" onclick="selectRating(1)">★</button>
+          <button class="star-btn" data-v="2" onclick="selectRating(2)">★★</button>
+          <button class="star-btn" data-v="3" onclick="selectRating(3)">★★★</button>
+          <button class="star-btn" data-v="4" onclick="selectRating(4)">★★★★</button>
+          <button class="star-btn" data-v="5" onclick="selectRating(5)">★★★★★</button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label" for="feedback" data-i18n="rating.msg">Message</label>
+        <textarea class="input textarea" id="feedback" data-i18n-placeholder="rating.msg.ph"></textarea>
+      </div>
+
+      <div class="error-msg" id="error-rating"></div>
+
+      <button class="btn-primary" id="btn-rating" onclick="submitRating()" data-i18n="rating.btn">Send Rating</button>
+
+      <div class="result-card" id="result-rating" style="display:none">
+        <div class="result-icon"><i class="fas fa-circle-check"></i></div>
+        <div class="result-body">
+          <div class="result-label" data-i18n="rating.result">Sent to Telegram!</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <span>© 2025 <a href="https://www.s-deployment.web.id" target="_blank">s-deployment.web.id</a></span>
+    <span>·</span>
+    <a href="https://t.me/depstore11" target="_blank"><i class="fab fa-telegram"></i> @depstore11</a>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>
