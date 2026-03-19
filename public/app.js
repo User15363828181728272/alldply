@@ -2,7 +2,7 @@ const I18N = {
     en: {
         "hero.badge":        "Web Automation Tool",
         "hero.title1":       "Deploy your website",
-        "hero.title2":       "to 7 platforms",
+        "hero.title2":       "to 4 platforms",
         "hero.sub":          "Upload a ZIP file and go live in seconds. No config needed.",
         "stat.deploys":      "Deploys",
         "stat.clones":       "Clones",
@@ -51,7 +51,7 @@ const I18N = {
     id: {
         "hero.badge":        "Alat Otomasi Web",
         "hero.title1":       "Deploy website kamu",
-        "hero.title2":       "ke 7 platform",
+        "hero.title2":       "ke 4 platform",
         "hero.sub":          "Upload file ZIP dan langsung live dalam hitungan detik. Tanpa konfigurasi.",
         "stat.deploys":      "Deploy",
         "stat.clones":       "Clone",
